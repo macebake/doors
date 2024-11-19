@@ -31,26 +31,27 @@ const DoorAnimation = ({ isOpen, hasCar, isSelected, onClick, disabled }) => {
     'relative w-40 h-56 cursor-pointer transition-all duration-300'
   ];
 
-  // If this door is selected (either initial pick or after switch)
+  // Selected door gets yellow border on top of image
   if (isSelected) {
-  // If door is open and has car, show green highlight (winner)
-  if (isOpen && hasCar) {
-    doorClasses.push('shadow-[0_0_30px_5px_rgba(34,197,94,0.7)]');
-  } else {
-    // Otherwise show yellow highlight for selected door
-    doorClasses.push('shadow-[0_0_30px_5px_rgba(234,179,8,0.7)]');
+    doorClasses.push('ring-4 ring-yellow-400 relative z-20');
   }
- // If door has car but isn't selected, show subtle green when revealed
- } else if (hasCar && isOpen) {
-  doorClasses.push('shadow-[0_0_30px_-5px_rgba(34,197,94,0.5)]');
-}
 
-  const className = doorClasses.filter(Boolean).join(' ');
-  
+  // Add spiky green highlight for car door when revealed
+  if (isOpen && hasCar) {
+    doorClasses.push('shadow-[0_0_15px_8px_rgba(34,197,94,0.8)]');
+  }
+
+  // Dim open doors that don't have the car
+  if (isOpen && !hasCar) {
+    doorClasses.push('bg-black/20');
+  }
+
+  const doorClassName = doorClasses.filter(Boolean).join(' ');
+
   return (
     <div 
       onClick={disabled ? undefined : onClick}
-      className={className}
+      className={doorClassName}
     >
       {/* Prize behind the door */}
       <div className="absolute inset-0 flex items-center justify-center text-6xl -ml-2.5">
@@ -88,7 +89,7 @@ const Doors = () => {
   const [gameState, setGameState] = useState('initial');
   const [wonCar, setWonCar] = useState(false);
   const [simResults, setSimResults] = useState([]);
-  const [simCount, setSimCount] = useState(100);
+  const [simCount, setSimCount] = useState(500);
   const [isSimulating, setIsSimulating] = useState(false);
   const [switchStrategy, setSwitchStrategy] = useState(true);
 
@@ -262,21 +263,21 @@ const Doors = () => {
         {gameState === 'gameOver' && (
           <div className="text-center">
             <h2 className={`text-2xl font-bold mb-4 ${wonCar ? 'text-green-500' : 'text-red-500'}`}>
-              {wonCar ? 'Congratulations! You won the car! 🎉' : 'Sorry! Better luck next time! 🐐'}
+              {wonCar ? 'beep beep! yay math 🚗' : 'boo. enjoy your goat 🐐'}
             </h2>
             <button 
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
               onClick={resetGame}
             >
-              Play Again
+              reset
             </button>
           </div>
         )}
       </div>
 
       {/* Simulation Controls */}
-      <div className="w-full max-w-lg border rounded-lg p-4 mt-8">
-        <h2 className="text-xl font-bold mb-4">Run Simulation</h2>
+      <div className="w-full max-w-lg border rounded-lg p-4 mt-8 bg-slate-100">
+        <h2 className="text-xl font-bold mb-4">run simulation <i>n</i> times</h2>
         <div className="flex flex-col gap-4 mb-4">
           <div className="flex items-center gap-4">
             <input
@@ -288,20 +289,20 @@ const Doors = () => {
               className="w-32 px-2 py-1 border rounded"
             />
             <div className="flex items-center gap-2">
-              <span className={`${!switchStrategy ? 'font-bold' : ''}`}>Keep</span>
+              <span className={`${!switchStrategy ? 'font-bold' : ''}`}>keep</span>
               <Toggle 
                 checked={switchStrategy}
                 onChange={setSwitchStrategy}
                 disabled={isSimulating}
               />
-              <span className={`${switchStrategy ? 'font-bold' : ''}`}>Switch</span>
+              <span className={`${switchStrategy ? 'font-bold' : ''}`}>switch</span>
             </div>
             <button 
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
               onClick={runSimulation}
               disabled={isSimulating}
             >
-              Run Simulation
+              run
             </button>
           </div>
         </div>
