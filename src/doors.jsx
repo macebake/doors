@@ -60,7 +60,7 @@ const DoorAnimation = ({ isOpen, hasCar, isSelected, onClick, disabled }) => {
 
       {/* Door image */}
       <img 
-        src={`/assets/door${animationFrame}.png`}
+        src={`doors/assets/door${animationFrame}.png`}
         alt={`Door ${isOpen ? 'opening frame ' + animationFrame : 'closed'}`}
         className="w-full h-full object-contain relative z-10"
       />
